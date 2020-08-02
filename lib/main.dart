@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:convert/convert.dart' as convert;
 
 void main() {
   runApp(MyApp());
@@ -23,7 +28,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<User>
+  Future<List<User>> _getUser() async{
+    var url="https://api.github.com/users/hadley/orgs";
+    var data = await http.get(url);
+    var jsonData = jsonDecode(data.body);
+
+    List<User> users=[];
+    for ( var u in jsonData){
+      User user= User(u["id"], u["login"], u["avatar_url"]);
+      users.add(user);
+    }
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +47,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("JSON DATA"),
       ),
       body: Container(
-        child: Center(child: Text('Hello')),
+        child: Center(child: FutureBuilder(builder: (BuildContext context,AsyncSnapshot snapshot),),),
       ),
     );
   }
